@@ -1,4 +1,6 @@
 #!/bin/bash
+appversion=v0.0.4
+
 function todir() {
   pwd
 }
@@ -15,7 +17,13 @@ function forcepull() {
   git fetch --all && git reset --hard origin/master && git pull
 }
 
-
+function tag() {
+    getversion
+    git add .
+    git commit -m "release ${appversion}"
+    git tag -a $appversion -m "release${appversion}"
+    git push origin $appversion
+}
 #  shellcheck disable=SC2120
 function gitpush() {
   commit=""
@@ -31,12 +39,35 @@ function gitpush() {
   #  git push -u origin main
   git push
 }
-
+function getversion() {
+  appversion=$(cat version.txt)
+  if [ "$appversion" = "" ]; then
+    appversion="0.0.0"
+    echo $appversion
+  else
+    v3=$(echo $appversion | awk -F'.' '{print($3);}')
+    v2=$(echo $appversion | awk -F'.' '{print($2);}')
+    v1=$(echo $appversion | awk -F'.' '{print($1);}')
+    if [[ $(expr $v3 \>= 9) == 1 ]]; then
+      v3=0
+      if [[ $(expr $v2 \>= 9) == 1 ]]; then
+        v2=0
+        v1=$(expr $v1 + 1)
+      else
+        v2=$(expr $v2 + 1)
+      fi
+    else
+      v3=$(expr $v3 + 1)
+    fi
+    ver="$v1.$v2.$v3"
+    echo $ver
+  fi
+}
 function m() {
     echo "1. 强制更新"
     echo "2. 普通更新"
     echo "3. 提交项目"
-    echo "4. 构建镜像"
+    echo "4. tag"
     echo "请输入编号:"
     read index
 
@@ -44,7 +75,7 @@ function m() {
     [1]) (forcepull);;
     [2]) (pull);;
     [3]) (gitpush);;
-    [4]) (createimage);;
+    [4]) (tag);;
     *) echo "exit" ;;
   esac
 }

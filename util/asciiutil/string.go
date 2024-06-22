@@ -1,7 +1,10 @@
 package asciiutil
 
 import (
+	"errors"
 	"fmt"
+	"net"
+	"strconv"
 	"unicode"
 )
 
@@ -17,4 +20,21 @@ func Ascii2String(data []byte) string {
 		}
 	}
 	return str
+}
+
+func SplitHostPort(address string) (string, uint64, error) {
+	if address == "" {
+		return "", 0, errors.New("address is nil")
+	}
+	host, port, err := net.SplitHostPort(address)
+	if err == nil {
+		num, err1 := strconv.Atoi(port)
+		if err1 == nil {
+			return host, uint64(num), err
+		} else {
+			return host, uint64(num), err1
+		}
+	} else {
+		return host, 0, err
+	}
 }
