@@ -47,6 +47,7 @@ function tag() {
     git commit -m "release ${version}"
     git tag -a $version -m "release${version}"
     git push origin $version
+    echo $version >version.txt
 }
 #  shellcheck disable=SC2120
 function gitpush() {
