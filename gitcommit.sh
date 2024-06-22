@@ -44,9 +44,9 @@ function tag() {
     version=$(getversion)
     echo "current version:${version}"
     git add .
-    git commit -m "release ${version}"
-    git tag -a $version -m "release${version}"
-    git push origin $version
+    git commit -m "release v${version}"
+    git tag -a v$version -m "release v${version}"
+    git push origin v$version
     echo $version >version.txt
 }
 #  shellcheck disable=SC2120
