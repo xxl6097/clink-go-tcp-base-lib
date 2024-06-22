@@ -10,10 +10,14 @@ var DEBUG *bool
 
 func IsDebug() bool {
 	glog.Debug("Debug mode", DEBUG)
-	if strings.Compare(runtime.GOOS, "darwin") == 0 || *DEBUG {
-		return true
+	if IsMacOs() {
+		return IsMacOs()
 	}
-	return false
+	if DEBUG == nil {
+		return false
+	} else {
+		return *DEBUG
+	}
 }
 
 func IsMacOs() bool {
