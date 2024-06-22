@@ -41,11 +41,12 @@ function forcepull() {
 }
 
 function tag() {
-    getversion
+    version=$(getversion)
+    echo "current version:${version}"
     git add .
-    git commit -m "release ${appversion}"
-    git tag -a $appversion -m "release${appversion}"
-    git push origin $appversion
+    git commit -m "release ${version}"
+    git tag -a $version -m "release${version}"
+    git push origin $version
 }
 #  shellcheck disable=SC2120
 function gitpush() {
