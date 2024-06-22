@@ -1,5 +1,28 @@
 #!/bin/bash
-appversion=v0.0.4
+function getversion() {
+  appversion=$(cat version.txt)
+  if [ "$appversion" = "" ]; then
+    appversion="0.0.0"
+    echo $appversion
+  else
+    v3=$(echo $appversion | awk -F'.' '{print($3);}')
+    v2=$(echo $appversion | awk -F'.' '{print($2);}')
+    v1=$(echo $appversion | awk -F'.' '{print($1);}')
+    if [[ $(expr $v3 \>= 9) == 1 ]]; then
+      v3=0
+      if [[ $(expr $v2 \>= 9) == 1 ]]; then
+        v2=0
+        v1=$(expr $v1 + 1)
+      else
+        v2=$(expr $v2 + 1)
+      fi
+    else
+      v3=$(expr $v3 + 1)
+    fi
+    ver="$v1.$v2.$v3"
+    echo $ver
+  fi
+}
 
 function todir() {
   pwd
@@ -39,30 +62,8 @@ function gitpush() {
   #  git push -u origin main
   git push
 }
-function getversion() {
-  appversion=$(cat version.txt)
-  if [ "$appversion" = "" ]; then
-    appversion="0.0.0"
-    echo $appversion
-  else
-    v3=$(echo $appversion | awk -F'.' '{print($3);}')
-    v2=$(echo $appversion | awk -F'.' '{print($2);}')
-    v1=$(echo $appversion | awk -F'.' '{print($1);}')
-    if [[ $(expr $v3 \>= 9) == 1 ]]; then
-      v3=0
-      if [[ $(expr $v2 \>= 9) == 1 ]]; then
-        v2=0
-        v1=$(expr $v1 + 1)
-      else
-        v2=$(expr $v2 + 1)
-      fi
-    else
-      v3=$(expr $v3 + 1)
-    fi
-    ver="$v1.$v2.$v3"
-    echo $ver
-  fi
-}
+
+
 function m() {
     echo "1. 强制更新"
     echo "2. 普通更新"
@@ -88,79 +89,5 @@ function bootstrap() {
        *) ( gitpush $1)  ;;
     esac
 }
-
-function createimage() {
-    gitpush
-    curl -u pt946a3zc74l:7e525b20f5db96b707d1efad1419bd6c5a57f6ee \
-       -v -X POST  'https://clife-devops.coding.net/api/cci/job/3843855/trigger' \
-       -H 'Content-Type: application/json' \
-       -d '
-        {
-        "ref": "master",
-        "envs": [
-            {
-                "name": "K8S_CRED",
-                "value": "ec08644f-9c70-40ed-b2a8-13d70fb06b33",
-                "sensitive": 0
-            },
-            {
-                "name": "DOCKER_CRED",
-                "value": "3a602514-e764-436f-a6ef-7c2403f5b146",
-                "sensitive": 0
-            },
-            {
-                "name": "DEPLOY_ENV",
-                "value": "testsl",
-                "sensitive": 0
-            },
-            {
-                "name": "K8S_SERVER_URL",
-                "value": "https://121.15.143.68:6443",
-                "sensitive": 0
-            },
-            {
-                "name": "SERVICE_NAMES",
-                "value": "clink-go-tcp-server",
-                "sensitive": 0
-            },
-            {
-                "name": "SERVICE_PORT",
-                "value": "31380",
-                "sensitive": 0
-            },
-            {
-                "name": "ServiceVersion",
-                "value": "v0.0.0",
-                "sensitive": 0
-            },
-            {
-                "name": "NAMESPACE",
-                "value": "clink",
-                "sensitive": 0
-            },
-            {
-                "name": "GO_VERSION",
-                "value": "1.19",
-                "sensitive": 0
-            },
-            {
-                "name": "VERSION_TYPE",
-                "value": "snapshot",
-                "sensitive": 0
-            },
-            {
-                "name": "PRIVATE_CLOUD",
-                "value": "clife",
-                "sensitive": 0
-            },
-            {
-                "name": "SERVICE_TCP_PORT",
-                "value": "31300",
-                "sensitive": 0
-            }
-        ]
-    }'
-}
-
 
 bootstrap m
