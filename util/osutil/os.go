@@ -9,7 +9,7 @@ import (
 var debug *bool
 
 func IsDebug() bool {
-	glog.Debug("Debug mode", debug)
+	glog.Debug("Debug mode", *debug)
 	if debug == nil {
 		return false
 	} else {
