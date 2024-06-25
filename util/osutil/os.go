@@ -10,9 +10,6 @@ var DEBUG *bool
 
 func IsDebug() bool {
 	glog.Debug("Debug mode", DEBUG)
-	if IsMacOs() {
-		return IsMacOs()
-	}
 	if DEBUG == nil {
 		return false
 	} else {
