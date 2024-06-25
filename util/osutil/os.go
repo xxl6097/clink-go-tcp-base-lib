@@ -6,15 +6,19 @@ import (
 	"strings"
 )
 
-var DEBUG *bool
+var debug *bool
 
 func IsDebug() bool {
-	glog.Debug("Debug mode", DEBUG)
-	if DEBUG == nil {
+	glog.Debug("Debug mode", debug)
+	if debug == nil {
 		return false
 	} else {
-		return *DEBUG
+		return *debug
 	}
+}
+
+func SetDebug(_debug bool) {
+	debug = &_debug
 }
 
 func IsMacOs() bool {
