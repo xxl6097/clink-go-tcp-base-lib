@@ -1,7 +1,6 @@
 package osutil
 
 import (
-	"github.com/xxl6097/go-glog/glog"
 	"runtime"
 	"strings"
 )
@@ -9,7 +8,7 @@ import (
 var debug *bool
 
 func IsDebug() bool {
-	glog.Debug("Debug mode", *debug)
+	//glog.Debug("Debug mode", *debug)
 	if debug == nil {
 		return false
 	} else {
